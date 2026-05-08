@@ -1,0 +1,743 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>RaySu | Кафе — меню, состав, КБЖУ</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #fdf9f5;
+            color: #2c2416;
+        }
+
+        :root {
+            --primary: #c17b4b;
+            --primary-dark: #a55d32;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 16px;
+        }
+
+        /* Header */
+        header {
+            background: white;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            border-bottom: 1px solid #efe3d8;
+            padding: 12px 0;
+        }
+
+        .nav-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1.6rem;
+            font-weight: 800;
+            color: var(--primary);
+        }
+
+        .logo span {
+            color: #a55d32;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 20px;
+            list-style: none;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: #3a2c1f;
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+
+        .cart-icon {
+            position: relative;
+            cursor: pointer;
+            font-size: 1.2rem;
+        }
+
+        .cart-count {
+            position: absolute;
+            top: -8px;
+            right: -10px;
+            background: var(--primary);
+            color: white;
+            font-size: 0.65rem;
+            padding: 2px 5px;
+            border-radius: 20px;
+        }
+
+        .menu-icon {
+            display: none;
+            font-size: 24px;
+            cursor: pointer;
+        }
+
+        /* Hero */
+        .hero {
+            background: linear-gradient(135deg, #fdf1e8, #fff7f0);
+            padding: 40px 0;
+            text-align: center;
+        }
+
+        .hero h1 {
+            font-size: 2rem;
+            margin-bottom: 12px;
+        }
+
+        .hero h1 i {
+            color: var(--primary);
+        }
+
+        .hero p {
+            color: #5e4a36;
+            margin-bottom: 24px;
+        }
+
+        .btn {
+            display: inline-block;
+            background: var(--primary);
+            color: white;
+            padding: 10px 24px;
+            border-radius: 40px;
+            text-decoration: none;
+            font-weight: 600;
+            border: none;
+            cursor: pointer;
+        }
+
+        .btn-outline {
+            background: transparent;
+            border: 2px solid var(--primary);
+            color: var(--primary-dark);
+        }
+
+        /* Categories */
+        .section {
+            padding: 40px 0;
+        }
+
+        .section-title {
+            text-align: center;
+            font-size: 1.8rem;
+            margin-bottom: 8px;
+        }
+
+        .section-sub {
+            text-align: center;
+            color: #7f6a53;
+            margin-bottom: 30px;
+            font-size: 0.9rem;
+        }
+
+        .menu-categories {
+            display: flex;
+            justify-content: center;
+            gap: 8px;
+            flex-wrap: wrap;
+            margin-bottom: 30px;
+        }
+
+        .cat-btn {
+            background: white;
+            border: 1px solid #efe3d8;
+            padding: 6px 16px;
+            border-radius: 40px;
+            font-weight: 600;
+            cursor: pointer;
+            font-size: 0.8rem;
+        }
+
+        .cat-btn.active {
+            background: var(--primary);
+            border-color: var(--primary);
+            color: white;
+        }
+
+        /* Menu Grid */
+        .menu-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 20px;
+        }
+
+        .menu-card {
+            background: white;
+            border-radius: 20px;
+            overflow: hidden;
+            border: 1px solid #efe3d8;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        .menu-card:active {
+            transform: scale(0.98);
+        }
+
+        .menu-img {
+            height: 180px;
+            background-size: cover;
+            background-position: center;
+        }
+
+        .menu-info {
+            padding: 14px 16px;
+        }
+
+        .menu-info h3 {
+            font-size: 1.1rem;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .price {
+            color: var(--primary);
+            font-weight: 700;
+        }
+
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.8);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .modal-content {
+            background: white;
+            max-width: 450px;
+            width: 100%;
+            border-radius: 28px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .modal-img {
+            width: 100%;
+            height: 220px;
+            background-size: cover;
+            background-position: center;
+        }
+
+        .modal-body {
+            padding: 20px;
+        }
+
+        .modal-body h2 {
+            font-size: 1.4rem;
+            margin-bottom: 8px;
+        }
+
+        .modal-price {
+            font-size: 1.3rem;
+            color: var(--primary);
+            font-weight: 700;
+            margin: 10px 0;
+        }
+
+        .nutrition {
+            background: #f8f2ec;
+            padding: 12px;
+            border-radius: 16px;
+            margin: 15px 0;
+            display: flex;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .nutrition span {
+            font-weight: 600;
+            font-size: 0.8rem;
+        }
+
+        .ingredients {
+            margin: 15px 0;
+            color: #5e4a36;
+            font-size: 0.85rem;
+            line-height: 1.4;
+        }
+
+        .close-modal {
+            position: absolute;
+            right: 16px;
+            top: 12px;
+            background: rgba(0,0,0,0.5);
+            color: white;
+            border: none;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            font-size: 20px;
+            cursor: pointer;
+        }
+
+        /* Cart */
+        .cart-overlay {
+            position: fixed;
+            top: 0;
+            right: -100%;
+            width: 100%;
+            max-width: 380px;
+            height: 100%;
+            background: white;
+            z-index: 1001;
+            transition: 0.3s;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .cart-overlay.open {
+            right: 0;
+        }
+
+        .cart-header {
+            display: flex;
+            justify-content: space-between;
+            padding-bottom: 16px;
+            border-bottom: 1px solid #efe3d8;
+        }
+
+        .cart-items {
+            flex: 1;
+            overflow-y: auto;
+        }
+
+        .cart-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 12px 0;
+            border-bottom: 1px solid #eee;
+        }
+
+        .cart-total {
+            font-size: 1.2rem;
+            font-weight: 700;
+            padding: 16px 0;
+            border-top: 1px solid #efe3d8;
+        }
+
+        /* Contacts */
+        .contact-block {
+            background: white;
+            border-radius: 24px;
+            padding: 24px;
+        }
+
+        .contact-details {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 24px;
+        }
+
+        .contact-col {
+            flex: 1;
+            min-width: 160px;
+        }
+
+        .contact-col h3 {
+            font-size: 1.1rem;
+            margin-bottom: 16px;
+            display: flex;
+            gap: 8px;
+        }
+
+        .contact-col h3 i {
+            color: var(--primary);
+        }
+
+        .contact-item {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 12px;
+            font-size: 0.85rem;
+        }
+
+        .social-links {
+            display: flex;
+            gap: 16px;
+            margin-top: 12px;
+        }
+
+        .social-links a {
+            color: #4a3a2a;
+            font-size: 1.3rem;
+        }
+
+        .work-hours li {
+            display: flex;
+            justify-content: space-between;
+            padding: 6px 0;
+            border-bottom: 1px dashed #efe3d8;
+            list-style: none;
+            font-size: 0.85rem;
+        }
+
+        footer {
+            background: #221f1b;
+            color: #d1c7bc;
+            padding: 30px 0;
+            text-align: center;
+            font-size: 0.8rem;
+        }
+
+        @media (max-width: 768px) {
+            .nav-links {
+                display: none;
+                flex-direction: column;
+                width: 100%;
+                background: white;
+                padding: 16px;
+                border-radius: 20px;
+                margin-top: 12px;
+                text-align: center;
+            }
+            .nav-links.show {
+                display: flex;
+            }
+            .menu-icon {
+                display: block;
+            }
+            .hero h1 {
+                font-size: 1.6rem;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <div class="container">
+        <div class="nav-bar">
+            <div class="logo">Ray<span>Su</span></div>
+            <div class="menu-icon" onclick="toggleMenu()">☰</div>
+            <ul class="nav-links" id="navLinks">
+                <li><a href="#home" onclick="closeMenu()">Главная</a></li>
+                <li><a href="#menu" onclick="closeMenu()">Меню</a></li>
+                <li><a href="#about" onclick="closeMenu()">О нас</a></li>
+                <li><a href="#contacts" onclick="closeMenu()">Контакты</a></li>
+            </ul>
+            <div class="cart-icon" onclick="toggleCart()">
+                <i class="fas fa-shopping-bag"></i>
+                <span class="cart-count" id="cartCount">0</span>
+            </div>
+        </div>
+    </div>
+</header>
+
+<section class="hero" id="home">
+    <div class="container">
+        <h1>RaySu — <i>вкус, который</i> влюбляет</h1>
+        <p>52 авторских блюда • Состав и КБЖУ</p>
+        <a href="#menu" class="btn">🍽 Смотреть меню</a>
+        <a href="#" class="btn btn-outline" style="margin-left: 10px;" onclick="bookTable()">📅 Забронировать</a>
+    </div>
+</section>
+
+<section id="menu" class="section">
+    <div class="container">
+        <h2 class="section-title">Наше меню</h2>
+        <div class="section-sub">Нажмите на блюдо — увидите состав и калории</div>
+        
+        <div class="menu-categories" id="categoryFilter">
+            <button class="cat-btn active" data-cat="all">Все</button>
+            <button class="cat-btn" data-cat="starters">Закуски</button>
+            <button class="cat-btn" data-cat="soups">Супы</button>
+            <button class="cat-btn" data-cat="mains">Горячее</button>
+            <button class="cat-btn" data-cat="desserts">Десерты</button>
+            <button class="cat-btn" data-cat="drinks">Напитки</button>
+        </div>
+        
+        <div class="menu-grid" id="menuGrid"></div>
+    </div>
+</section>
+
+<section id="about" style="background: #fff5ec; padding: 40px 0;">
+    <div class="container">
+        <div style="text-align: center;">
+            <h2 style="font-size: 1.6rem;">О RaySu</h2>
+            <p style="margin: 16px 0; max-width: 600px; margin-left: auto; margin-right: auto;">Каждое блюдо — с душой. Только свежие продукты. В карточке каждого товара — полный состав и КБЖУ.</p>
+            <div style="display: flex; justify-content: center; gap: 30px;">
+                <div><i class="fas fa-star" style="color:var(--primary)"></i> 4.9 ★</div>
+                <div><i class="fas fa-utensils"></i> 52 блюда</div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section id="contacts" class="section">
+    <div class="container">
+        <h2 class="section-title">Контакты</h2>
+        <div class="contact-block">
+            <div class="contact-details">
+                <div class="contact-col">
+                    <h3><i class="fas fa-location-dot"></i> Адрес</h3>
+                    <div class="contact-item"><i class="fas fa-map-pin"></i> ул. Гурманов, 15, Москва</div>
+                    <div class="contact-item"><i class="fas fa-subway"></i> м. Достоевская</div>
+                </div>
+                <div class="contact-col">
+                    <h3><i class="fas fa-phone"></i> Связь</h3>
+                    <div class="contact-item"><i class="fas fa-phone-alt"></i> +7 (999) 123-45-67</div>
+                    <div class="social-links">
+                        <a href="#"><i class="fab fa-instagram"></i></a>
+                        <a href="#"><i class="fab fa-telegram"></i></a>
+                        <a href="#"><i class="fab fa-whatsapp"></i></a>
+                    </div>
+                </div>
+                <div class="contact-col">
+                    <h3><i class="fas fa-clock"></i> Режим</h3>
+                    <ul class="work-hours">
+                        <li><span>Пн–Чт</span><span>09:00 – 23:00</span></li>
+                        <li><span>Пт–Сб</span><span>09:00 – 01:00</span></li>
+                        <li><span>Вс</span><span>10:00 – 22:00</span></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<footer>
+    <div class="container">
+        <p>© 2025 RaySu Cafe — 52 блюда с составом и КБЖУ</p>
+    </div>
+</footer>
+
+<!-- Modal -->
+<div id="productModal" class="modal">
+    <div class="modal-content">
+        <button class="close-modal" onclick="closeModal()">×</button>
+        <div id="modalImg" class="modal-img"></div>
+        <div class="modal-body">
+            <h2 id="modalTitle"></h2>
+            <div id="modalPrice" class="modal-price"></div>
+            <div id="modalNutrition" class="nutrition"></div>
+            <div id="modalIngredients" class="ingredients"></div>
+            <button class="btn" style="width:100%" onclick="addCurrentToCart()">➕ Добавить в корзину</button>
+        </div>
+    </div>
+</div>
+
+<!-- Cart -->
+<div class="cart-overlay" id="cartSidebar">
+    <div class="cart-header">
+        <h3>🛒 Корзина</h3>
+        <i class="fas fa-times" style="font-size: 22px; cursor:pointer;" onclick="toggleCart()"></i>
+    </div>
+    <div id="cartItemsList" class="cart-items"></div>
+    <div class="cart-total">Итого: <span id="cartTotalPrice">0 ₽</span></div>
+    <button class="btn" style="width:100%; margin-top:16px;" onclick="checkout()">Оформить заказ</button>
+</div>
+
+<script>
+    // МЕНЮ 52 ПОЗИЦИИ
+    const menuData = [
+        { id:1, name:'Цезарь с креветкой', price:590, cat:'starters', img:'https://images.unsplash.com/photo-1550304943-4f24f54dd1a3?w=400', weight:'280г', calories:'490 ккал', protein:'28г', fat:'32г', carbs:'21г', ingredients:'Креветки (120г), салат романо, пармезан, соус цезарь.' },
+        { id:2, name:'Тартар из лосося', price:690, cat:'starters', img:'https://images.unsplash.com/photo-1600891964599-f61ba0e24092?w=400', weight:'220г', calories:'410 ккал', protein:'24г', fat:'28г', carbs:'12г', ingredients:'Лосось свежий, авокадо, кунжут, соус понзу.' },
+        { id:3, name:'Салат с утиной грудкой', price:640, cat:'starters', img:'https://images.unsplash.com/photo-1536304929831-ee1ca9d44906?w=400', weight:'260г', calories:'530 ккал', protein:'31г', fat:'38г', carbs:'15г', ingredients:'Утиная грудка, апельсин, микс салатов, клюква.' },
+        { id:4, name:'Брускетта с томатами', price:350, cat:'starters', img:'https://images.unsplash.com/photo-1572695157366-1b2bebcec5b2?w=400', weight:'180г', calories:'320 ккал', protein:'8г', fat:'14г', carbs:'38г', ingredients:'Хлеб чиабатта, вяленые томаты, чеснок, базилик.' },
+        { id:5, name:'Греческий салат', price:480, cat:'starters', img:'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=400', weight:'320г', calories:'360 ккал', protein:'12г', fat:'26г', carbs:'18г', ingredients:'Фета, оливки, огурцы, перец, красный лук.' },
+        { id:6, name:'Карпаччо из говядины', price:720, cat:'starters', img:'https://images.unsplash.com/photo-1625938144743-349f1e2c3e6f?w=400', weight:'180г', calories:'380 ккал', protein:'28г', fat:'26г', carbs:'6г', ingredients:'Говядина мраморная, пармезан, руккола, трюфельное масло.' },
+        { id:7, name:'Овощи гриль', price:420, cat:'starters', img:'https://images.unsplash.com/photo-1585937421612-70a008356fbe?w=400', weight:'280г', calories:'210 ккал', protein:'5г', fat:'14г', carbs:'22г', ingredients:'Цукини, баклажаны, перец, соус песто.' },
+        { id:8, name:'Сырная тарелка', price:890, cat:'starters', img:'https://images.unsplash.com/photo-1452195100486-9cc805987862?w=400', weight:'240г', calories:'680 ккал', protein:'32г', fat:'54г', carbs:'8г', ingredients:'Камамбер, дорблю, пармезан, мед, орехи.' },
+        { id:9, name:'Том Ям', price:690, cat:'soups', img:'https://images.unsplash.com/photo-1603878353780-a2bcf3b56cc4?w=400', weight:'350мл', calories:'380 ккал', protein:'22г', fat:'24г', carbs:'18г', ingredients:'Креветки, кальмары, грибы, кокосовое молоко.' },
+        { id:10, name:'Суп-пюре из тыквы', price:390, cat:'soups', img:'https://images.unsplash.com/photo-1547592166-23ac4576b6c2?w=400', weight:'300мл', calories:'210 ккал', protein:'4г', fat:'12г', carbs:'24г', ingredients:'Тыква, сливки, семечки, крутоны.' },
+        { id:11, name:'Солянка мясная', price:450, cat:'soups', img:'https://images.unsplash.com/photo-1604157291110-617e98bed009?w=400', weight:'350мл', calories:'420 ккал', protein:'26г', fat:'28г', carbs:'16г', ingredients:'Говядина, колбаски, каперсы, оливки.' },
+        { id:12, name:'Борщ украинский', price:420, cat:'soups', img:'https://images.unsplash.com/photo-1580052614034-c55e343f4e2b?w=400', weight:'350мл', calories:'350 ккал', protein:'18г', fat:'20г', carbs:'24г', ingredients:'Свинина, свекла, капуста, сметана.' },
+        { id:13, name:'Крем-суп из грибов', price:490, cat:'soups', img:'https://images.unsplash.com/photo-1579998901861-fac5a8f91d34?w=400', weight:'300мл', calories:'280 ккал', protein:'8г', fat:'20г', carbs:'18г', ingredients:'Белые грибы, сливки, крутоны.' },
+        { id:14, name:'Уха царская', price:590, cat:'soups', img:'https://images.unsplash.com/photo-1601053547680-844f0a0c0c9d?w=400', weight:'350мл', calories:'310 ккал', protein:'28г', fat:'14г', carbs:'12г', ingredients:'Лосось, семга, форель, картофель.' },
+        { id:15, name:'Бургер RaySu', price:620, cat:'mains', img:'https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=400', weight:'320г', calories:'780 ккал', protein:'42г', fat:'44г', carbs:'52г', ingredients:'Говяжья котлета, бекон, сыр чеддер, соус BBQ.' },
+        { id:16, name:'Ризотто с трюфелем', price:750, cat:'mains', img:'https://images.unsplash.com/photo-1476124369491-e7addf5db371?w=400', weight:'300г', calories:'620 ккал', protein:'16г', fat:'34г', carbs:'58г', ingredients:'Рис арборио, пармезан, масло трюфеля, грибы.' },
+        { id:17, name:'Паста Карбонара', price:540, cat:'mains', img:'https://images.unsplash.com/photo-1551183053-bf91a1d81141?w=400', weight:'280г', calories:'650 ккал', protein:'28г', fat:'38г', carbs:'48г', ingredients:'Спагетти, бекон, пармезан, желток.' },
+        { id:18, name:'Стейк мраморный', price:1290, cat:'mains', img:'https://images.unsplash.com/photo-1594041680534-e8c8cdebd659?w=400', weight:'320г', calories:'850 ккал', protein:'58г', fat:'62г', carbs:'12г', ingredients:'Мраморная говядина, картофель гратен, соус демиглас.' },
+        { id:19, name:'Дорада на гриле', price:890, cat:'mains', img:'https://images.unsplash.com/photo-1519708227418-c8fd9a32b7a2?w=400', weight:'330г', calories:'490 ккал', protein:'48г', fat:'28г', carbs:'16г', ingredients:'Дорада, овощи гриль, лимон, соус песто.' },
+        { id:20, name:'Курица с овощами', price:590, cat:'mains', img:'https://images.unsplash.com/photo-1598515214211-89d3c73ae83b?w=400', weight:'310г', calories:'540 ккал', protein:'46г', fat:'26г', carbs:'28г', ingredients:'Филе куриное, цукини, перец, соус терияки.' },
+        { id:21, name:'Лазанья болоньезе', price:620, cat:'mains', img:'https://images.unsplash.com/photo-1574894709920-11b28e7367e3?w=400', weight:'350г', calories:'690 ккал', protein:'34г', fat:'38г', carbs:'52г', ingredients:'Мясной соус, листы лазаньи, бешамель.' },
+        { id:22, name:'Свиные ребрышки', price:990, cat:'mains', img:'https://images.unsplash.com/photo-1544025162-d76694265947?w=400', weight:'380г', calories:'890 ккал', protein:'52г', fat:'64г', carbs:'34г', ingredients:'Ребрышки, мед, горчица, картофель фри.' },
+        { id:23, name:'Печень по-строгановски', price:580, cat:'mains', img:'https://images.unsplash.com/photo-1514517521153-1be72277b32d?w=400', weight:'290г', calories:'460 ккал', protein:'32г', fat:'24г', carbs:'26г', ingredients:'Печень говяжья, сливки, лук, пюре.' },
+        { id:24, name:'Рыба в кляре', price:680, cat:'mains', img:'https://images.unsplash.com/photo-1579631542720-3a87824fff84?w=400', weight:'320г', calories:'570 ккал', protein:'38г', fat:'32г', carbs:'32г', ingredients:'Треска, кляр, картофель фри, соус тартар.' },
+        { id:25, name:'Цыпленок табака', price:750, cat:'mains', img:'https://images.unsplash.com/photo-1585517889902-606eda29b13f?w=400', weight:'550г', calories:'720 ккал', protein:'58г', fat:'48г', carbs:'12г', ingredients:'Цыпленок, чеснок, свежие овощи.' },
+        { id:26, name:'Пад Тай с креветками', price:720, cat:'mains', img:'https://images.unsplash.com/photo-1559314809-0d155014e29e?w=400', weight:'320г', calories:'540 ккал', protein:'32г', fat:'22г', carbs:'58г', ingredients:'Рисовая лапша, креветки, арахис, яйцо.' },
+        { id:27, name:'Шашлык из ягненка', price:1100, cat:'mains', img:'https://images.unsplash.com/photo-1529692236671-f1f6cf9683ba?w=400', weight:'350г', calories:'680 ккал', protein:'44г', fat:'50г', carbs:'12г', ingredients:'Ягненок, овощи, специи.' },
+        { id:28, name:'Рататуй', price:490, cat:'mains', img:'https://images.unsplash.com/photo-1585937421612-70a008356fbe?w=400', weight:'280г', calories:'260 ккал', protein:'6г', fat:'18г', carbs:'22г', ingredients:'Цукини, баклажаны, томаты, тимьян.' },
+        { id:29, name:'Чизкейк', price:390, cat:'desserts', img:'https://images.unsplash.com/photo-1524351199678-941a58a3df50?w=400', weight:'180г', calories:'480 ккал', protein:'9г', fat:'32г', carbs:'42г', ingredients:'Сливочный сыр, печенье, ягоды.' },
+        { id:30, name:'Тирамису', price:420, cat:'desserts', img:'https://images.unsplash.com/photo-1571877227200-a0d98ea607e9?w=400', weight:'160г', calories:'520 ккал', protein:'10г', fat:'34г', carbs:'46г', ingredients:'Маскарпоне, савоярди, кофе, какао.' },
+        { id:31, name:'Медовик', price:350, cat:'desserts', img:'https://images.unsplash.com/photo-1587314167662-56d7b84f57e3?w=400', weight:'150г', calories:'460 ккал', protein:'7г', fat:'26г', carbs:'52г', ingredients:'Мед, сметанный крем, орех.' },
+        { id:32, name:'Панна котта', price:380, cat:'desserts', img:'https://images.unsplash.com/photo-1486427944299-d1955d23e34d?w=400', weight:'140г', calories:'390 ккал', protein:'6г', fat:'28г', carbs:'32г', ingredients:'Сливки, ваниль, малиновый соус.' },
+        { id:33, name:'Красный бархат', price:440, cat:'desserts', img:'https://images.unsplash.com/photo-1587314167662-56d7b84f57e3?w=400', weight:'170г', calories:'510 ккал', protein:'8г', fat:'30г', carbs:'55г', ingredients:'Какао, сливочный сыр, свекла.' },
+        { id:34, name:'Наполеон', price:390, cat:'desserts', img:'https://images.unsplash.com/photo-1587314167662-56d7b84f57e3?w=400', weight:'180г', calories:'540 ккал', protein:'10г', fat:'38г', carbs:'46г', ingredients:'Слоеное тесто, заварной крем.' },
+        { id:35, name:'Эклеры (2шт)', price:290, cat:'desserts', img:'https://images.unsplash.com/photo-1606914494798-02d3fec9b5c3?w=400', weight:'120г', calories:'390 ккал', protein:'7г', fat:'24г', carbs:'38г', ingredients:'Заварное тесто, крем патисьер.' },
+        { id:36, name:'Мороженое ассорти', price:320, cat:'desserts', img:'https://images.unsplash.com/photo-1563805042-7684c019e1cb?w=400', weight:'150г', calories:'280 ккал', protein:'5г', fat:'16г', carbs:'30г', ingredients:'Ваниль, шоколад, клубника.' },
+        { id:37, name:'Штрудель с яблоком', price:370, cat:'desserts', img:'https://images.unsplash.com/photo-1587314167662-56d7b84f57e3?w=400', weight:'160г', calories:'410 ккал', protein:'6г', fat:'18г', carbs:'58г', ingredients:'Яблоки, корица, ванильный соус.' },
+        { id:38, name:'Фондю шоколадное', price:590, cat:'desserts', img:'https://images.unsplash.com/photo-1587314167662-56d7b84f57e3?w=400', weight:'250г', calories:'620 ккал', protein:'8г', fat:'38г', carbs:'64г', ingredients:'Шоколад, сливки, фрукты, зефир.' },
+        { id:39, name:'Латте', price:240, cat:'drinks', img:'https://images.unsplash.com/photo-1485808191679-5f86510681a2?w=400', weight:'300мл', calories:'180 ккал', protein:'6г', fat:'7г', carbs:'22г', ingredients:'Эспрессо, молоко, пенка.' },
+        { id:40, name:'Капучино', price:230, cat:'drinks', img:'https://images.unsplash.com/photo-1517701604599-bb29b565090c?w=400', weight:'250мл', calories:'150 ккал', protein:'5г', fat:'6г', carbs:'18г', ingredients:'Эспрессо, молоко, пенка.' },
+        { id:41, name:'Матча латте', price:310, cat:'drinks', img:'https://images.unsplash.com/photo-1513796737228-2b7d543efb28?w=400', weight:'300мл', calories:'220 ккал', protein:'8г', fat:'10г', carbs:'24г', ingredients:'Матча чай, молоко, сироп.' },
+        { id:42, name:'Раф', price:280, cat:'drinks', img:'https://images.unsplash.com/photo-1485808191679-5f86510681a2?w=400', weight:'250мл', calories:'260 ккал', protein:'8г', fat:'14г', carbs:'26г', ingredients:'Эспрессо, сливки, ванильный сироп.' },
+        { id:43, name:'Эспрессо', price:150, cat:'drinks', img:'https://images.unsplash.com/photo-1514432324607-a09d9b4aefdd?w=400', weight:'60мл', calories:'10 ккал', protein:'1г', fat:'0г', carbs:'2г', ingredients:'Кофе арабика.' },
+        { id:44, name:'Глинтвейн', price:350, cat:'drinks', img:'https://images.unsplash.com/photo-1575444758702-4a6b9222336e?w=400', weight:'250мл', calories:'180 ккал', protein:'1г', fat:'0г', carbs:'22г', ingredients:'Красное вино, апельсин, корица.' },
+        { id:45, name:'Морс клюквенный', price:190, cat:'drinks', img:'https://images.unsplash.com/photo-1556679343-c7306c1976bc?w=400', weight:'300мл', calories:'120 ккал', protein:'0г', fat:'0г', carbs:'30г', ingredients:'Клюква, сахар, вода.' },
+        { id:46, name:'Лимонад RaySu', price:290, cat:'drinks', img:'https://images.unsplash.com/photo-1556679343-c7306c1976bc?w=400', weight:'350мл', calories:'140 ккал', protein:'0г', fat:'0г', carbs:'35г', ingredients:'Имбирь, мята, лайм, газировка.' },
+        { id:47, name:'Фреш апельсиновый', price:270, cat:'drinks', img:'https://images.unsplash.com/photo-1613478223719-2ab802602423?w=400', weight:'300мл', calories:'130 ккал', protein:'2г', fat:'0г', carbs:'30г', ingredients:'Апельсин свежевыжатый.' },
+        { id:48, name:'Чай черный', price:160, cat:'drinks', img:'https://images.unsplash.com/photo-1597481499750-3e6b22637e12?w=400', weight:'300мл', calories:'10 ккал', protein:'0г', fat:'0г', carbs:'2г', ingredients:'Цейлонский чай, бергамот.' },
+        { id:49, name:'Чай зеленый', price:160, cat:'drinks', img:'https://images.unsplash.com/photo-1597481499750-3e6b22637e12?w=400', weight:'300мл', calories:'10 ккал', protein:'0г', fat:'0г', carbs:'2г', ingredients:'Зеленый чай, жасмин.' },
+        { id:50, name:'Смузи клубничный', price:320, cat:'drinks', img:'https://images.unsplash.com/photo-1623065422902-1d2a9c5a2d4e?w=400', weight:'350мл', calories:'210 ккал', protein:'4г', fat:'3г', carbs:'45г', ingredients:'Клубника, банан, йогурт.' },
+        { id:51, name:'Какао', price:190, cat:'drinks', img:'https://images.unsplash.com/photo-1514375468411-849f7c06b310?w=400', weight:'300мл', calories:'250 ккал', protein:'8г', fat:'10г', carbs:'32г', ingredients:'Какао, молоко, зефир.' },
+        { id:52, name:'Чай масала', price:240, cat:'drinks', img:'https://images.unsplash.com/photo-1597481499750-3e6b22637e12?w=400', weight:'300мл', calories:'80 ккал', protein:'2г', fat:'2г', carbs:'14г', ingredients:'Чай, молоко, специи.' }
+    ];
+
+    let cart = [];
+    let currentItem = null;
+
+    function renderMenu(category) {
+        const grid = document.getElementById('menuGrid');
+        if (!grid) return;
+        
+        let filtered = menuData;
+        if (category !== 'all') {
+            filtered = menuData.filter(item => item.cat === category);
+        }
+        
+        grid.innerHTML = '';
+        filtered.forEach(item => {
+            const card = document.createElement('div');
+            card.className = 'menu-card';
+            card.onclick = () => openModal(item);
+            card.innerHTML = `
+                <div class="menu-img" style="background-image: url('${item.img}');"></div>
+                <div class="menu-info">
+                    <h3>${item.name} <span class="price">${item.price} ₽</span></h3>
+                </div>
+            `;
+            grid.appendChild(card);
+        });
+    }
+
+    function openModal(item) {
+        currentItem = item;
+        document.getElementById('modalImg').style.backgroundImage = `url('${item.img}')`;
+        document.getElementById('modalTitle').innerText = item.name;
+        document.getElementById('modalPrice').innerHTML = `${item.price} ₽ • ${item.weight}`;
+        document.getElementById('modalNutrition').innerHTML = `
+            <span>🔥 ${item.calories}</span>
+            <span>🥩 ${item.protein}</span>
+            <span>🍖 ${item.fat}</span>
+            <span>🍚 ${item.carbs}</span>
+        `;
+        document.getElementById('modalIngredients').innerHTML = `<strong>📋 Состав:</strong> ${item.ingredients}`;
+        document.getElementById('productModal').style.display = 'flex';
+    }
+
+    function closeModal() {
+        document.getElementById('productModal').style.display = 'none';
+    }
+
+    function addCurrentToCart() {
+        if (currentItem) {
+            cart.push(currentItem);
+            updateCartUI();
+            closeModal();
+        }
+    }
+
+    function updateCartUI() {
+        const total = cart.reduce((sum, item) => sum + item.price, 0);
+        document.getElementById('cartTotalPrice').innerText = total + ' ₽';
+        document.getElementById('cartCount').innerText = cart.length;
+        
+        const cartList = document.getElementById('cartItemsList');
+        if (cartList) {
+            cartList.innerHTML = '';
+            cart.forEach((item, idx) => {
+                cartList.innerHTML += `
+                    <div class="cart-item">
+                        <span>${item.name}</span>
+                        <span>${item.price} ₽</span>
+                        <i class="fas fa-trash" style="cursor:pointer" onclick="removeFromCart(${idx})"></i>
+                    </div>
+                `;
+            });
+        }
+    }
+
+    function removeFromCart(idx) {
+        cart.splice(idx, 1);
+        updateCartUI();
+    }
+
+    function toggleCart() {
+        document.getElementById('cartSidebar').classList.toggle('open');
+    }
+
+    function toggleMenu() {
+        document.getElementById('navLinks').classList.toggle('show');
+    }
+
+    function closeMenu() {
+        document.getElementById('navLinks').classList.remove('show');
+    }
+
+    function bookTable() {
+        alert('📞 Бронирование: +7 (999) 123-45-67');
+    }
+
+    function checkout() {
+        if (cart.length > 0) {
+            alert(`✅ Заказ оформлен! Сумма: ${cart.reduce((s,i)=>s+i.price,0)} ₽. С вами свяжутся.`);
+            cart = [];
+            updateCartUI();
+            toggleCart();
+        } else {
+            alert('🛒 Корзина пуста');
+        }
+    }
+
+    // Категории
+    document.querySelectorAll('.cat-btn').forEach(btn => {
+        btn.addEventListener('click', function() {
+            document.querySelectorAll('.cat-btn').forEach(b => b.classList.remove('active'));
+            this.classList.add('active');
+            renderMenu(this.getAttribute('data-cat'));
+        });
+    });
+
+    // Закрытие модалки по клику вне
+    window.onclick = function(e) {
+        const modal = document.getElementById('productModal');
+        if (e.target === modal) {
+            closeModal();
+        }
+    };
+
+    // Запуск
+    renderMenu('all');
+</script>
+</body>
+</html>
